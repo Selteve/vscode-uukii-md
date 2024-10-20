@@ -37,9 +37,9 @@ Uukii Markdown Preview is a Visual Studio Code extension that provides real-time
 Contributions are welcome! Please follow these steps:
 
 1. Fork this repository.
-2. Create a new branch: `git checkout -b feature/your-feature-name`.
+2. Create a new branch: `git checkout -b https://github.com/Selteve/vscode-uukii-md.git`.
 3. Commit your changes: `git commit -m 'Add some feature'`.
-4. Push to the branch: `git push origin feature/your-feature-name`.
+4. Push to the branch: `git push origin https://github.com/Selteve/vscode-uukii-md.git`.
 5. Submit a Pull Request.
 
 ## LicenseY
