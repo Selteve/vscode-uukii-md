@@ -2,8 +2,15 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import * as marked from 'marked';
+import hljs from 'highlight.js'; // 确保正确导入
 
 let isDarkMode = false; // 用于跟踪当前模式
+interface Code {
+    text: string;
+    lang?: string;
+    escaped?: boolean; // 将 escaped 属性设为可选
+}
+
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -57,31 +64,28 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 function getWebviewContent(markdown: string, isDarkMode: boolean): string {
+	// Create a custom renderer for marked
+	const renderer = new marked.Renderer();
+	renderer.code = ({ text, lang, escaped }: Code) => {
+		const language = hljs.getLanguage(lang || '') ? lang : 'plaintext';
+		const highlighted = hljs.highlight(text, { language: language || 'plaintext' }).value;
+		return `<pre><code class="hljs">${highlighted}</code></pre>`;
+	};
+
+	// Set marked options with the custom renderer
+	marked.setOptions({
+		renderer: renderer,
+	});
+
 	const htmlContent = marked.parse(markdown);
 	const styles = isDarkMode ? `
 		body {
 			background-color: #1e1e1e;
 			color: #d4d4d4;
 		}
-		code {
-			background-color: #2d2d2d;
-			color: #c5c5c5;
-		}
-		pre {
-			background-color: #2d2d2d;
-			color: #c5c5c5;
-		}
 	` : `
 		body {
 			background-color: #ffffff;
-			color: #333333;
-		}
-		code {
-			background-color: #f5f5f5;
-			color: #c7254e;
-		}
-		pre {
-			background-color: #f5f5f5;
 			color: #333333;
 		}
 	`;
@@ -93,6 +97,7 @@ function getWebviewContent(markdown: string, isDarkMode: boolean): string {
 			<meta charset="UTF-8">
 			<meta name="viewport" content="width=device-width, initial-scale=1.0">
 			<title>Markdown Preview</title>
+			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
 			<style>
 				${styles}
 				h1, h2, h3, h4, h5, h6 {
@@ -109,7 +114,7 @@ function getWebviewContent(markdown: string, isDarkMode: boolean): string {
 		</head>
 		<body>
 			${htmlContent}
-			</body>
+		</body>
 		</html>
 	`;
 }
