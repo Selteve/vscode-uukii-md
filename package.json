@@ -3,7 +3,7 @@
   "displayName": "uukii_md",
   "description": "实时预览md文档",
   "publisher": "uukii",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "engines": {
     "vscode": "^1.94.0"
   },
